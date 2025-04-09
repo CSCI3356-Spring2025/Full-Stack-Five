@@ -46,7 +46,14 @@ input[type="number"] {
     -webkit-backdrop-filter: blur(4px);
     border-radius: 10px;
     border: 1px solid rgba(0, 0, 0, 0.18);
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Enable smooth transition */
 }
+
+.glass-modal-content:hover {
+    transform: scale(1.02);   /* Slightly enlarge the modal content */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4); /* Enhance the shadow effect */
+}
+
 
 .bg-solid,
 .course-form-input {
