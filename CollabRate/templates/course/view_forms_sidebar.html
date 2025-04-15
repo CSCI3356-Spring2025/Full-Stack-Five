@@ -60,14 +60,26 @@
                 </div>
             </a>
             {% for form in forms %}
-                <a href="{% url 'edit_info' join_code=course.join_code course_form_id=form.id %}" class="list-group-item 
-                    {% if form.state == 'draft' %}draft{% elif form.state == 'published' %}published{% elif form.state == 'released' %}released{% endif %}">
+                {% if form.is_past_due %}
+                    <a href="{% url 'view_responses' join_code=course.join_code form_id=form.id %}"
+                    class="list-group-item 
+                {% if form.state == 'draft' %}draft{% elif form.state == 'published' %}published{% elif form.state == 'released' %}released{% endif %}">
                     <div class="card-body">
                         <h5 class="card-title">{{ form.name }}</h5>
                         <p class="card-text">Due: {{ form.due_date|date:"F j, Y" }} at {{ form.due_time|date:"H:i" }}</p>
                     </div>
-                </a>
-            {% empty %}
+                    </a>
+                {% else %}
+                    <a href="{% url 'edit_info' join_code=course.join_code course_form_id=form.id %}"     
+                        class="list-group-item 
+                        {% if form.state == 'draft' %}draft{% elif form.state == 'published' %}published{% elif form.state == 'released' %}released{% endif %}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ form.name }}</h5>
+                            <p class="card-text">Due: {{ form.due_date|date:"F j, Y" }} at {{ form.due_time|date:"H:i" }}</p>
+                        </div>
+                    </a>
+                {% endif %}
+                {% empty %}
                 <p>No forms available for this course.</p>
             {% endfor %}
         </div>

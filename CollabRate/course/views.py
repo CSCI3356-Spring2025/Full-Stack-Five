@@ -4,12 +4,13 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from dashboard.models import Course
 from accounts.models import CustomUser
-from .models import CourseForm, Team, Likert, OpenEnded
+from .models import CourseForm, Team, Likert, OpenEnded, LikertResponse, OpenEndedResponse
 from .helper import *
 from django.http import HttpResponseRedirect
 from django.core.mail import send_mail 
 from django.urls import reverse 
 from django.conf import settings
+from datetime import datetime 
 
 @login_required
 def course_detail(request, join_code):
@@ -82,7 +83,8 @@ def create_team(request, join_code):
 def create_form(request, join_code):
     course = get_object_or_404(Course, join_code=join_code)
     forms = CourseForm.objects.filter(course=course)
-
+    forms = add_is_past_due(forms)
+    
     # Default color values
     default_colors = {
         'color_1': "#872729",  # default color 1
@@ -138,6 +140,14 @@ def edit_info(request, join_code, course_form_id):
     course_form = get_object_or_404(CourseForm, pk=course_form_id)
     forms = CourseForm.objects.filter(course=course)
 
+    #check if it is past the due date 
+    current_datetime = datetime.now()
+    if course_form.due_date and course_form.due_time:
+        due_datetime = datetime.combine(course_form.due_date, course_form.due_time)
+        course_form.is_past_due = due_datetime < current_datetime
+    else:
+        course_form.is_past_due = False
+    
     default_colors = {
         'color_1': "#872729",  # default color 1
         'color_2': "#C44B4B",  # default color 2
@@ -317,7 +327,7 @@ def delete_form(request, join_code, form_id):
 def edit_form(request, join_code, form_id):
     course = get_object_or_404(Course, join_code=join_code)
     form = get_object_or_404(CourseForm, pk=form_id, course=course)
-    
+    forms = add_is_past_due(forms)
     if request.method == 'POST':
         form.name = request.POST.get('form_name')
         form.due_date = request.POST.get('due_date')
@@ -365,3 +375,28 @@ def clear_course_forms(request, join_code):
         messages.error(request, 'Course not found.')
 
     return redirect('course_detail', join_code=join_code)
+
+@login_required
+def view_responses(request, join_code, form_id):
+    course = get_object_or_404(Course, join_code=join_code)
+    form = get_object_or_404(CourseForm, pk=form_id, course=course)
+
+    likert_responses = LikertResponse.objects.filter(likert__course_form=form)
+    open_ended_responses = OpenEndedResponse.objects.filter(open_ended__course_form=form)
+
+    return render(request, 'course/view_responses.html', {
+        'course': course,
+        'form': form,
+        'likert_responses': likert_responses,
+        'open_ended_responses': open_ended_responses,
+    })
+
+def add_is_past_due(forms):
+    current_datetime = datetime.now()
+    for f in forms:
+        if f.due_date and f.due_time:
+            due_datetime = datetime.combine(f.due_date, f.due_time)
+            f.is_past_due = due_datetime < current_datetime
+        else:
+            f.is_past_due = False
+    return forms
