@@ -14,7 +14,7 @@ services:
     startCommand: 'python -m gunicorn main.asgi:application -k uvicorn.workers.UvicornWorker' 
     envVars:
       - key: DATABASE_URL
-        value: postgresql://<user>:<pass>@dpg‑xyz.us‑west‑2.postgres.render.com/mysite
+        value: postgresql://mysite:BZFL7JbY1H5GJ2yAXvZiqfFlG1u3lFtq@dpg-d0ej7jqdbo4c738ofn9g-a.oregon-postgres.render.com/mysite_0bqo
       - key: SECRET_KEY
         generateValue: true
       - key: WEB_CONCURRENCY
