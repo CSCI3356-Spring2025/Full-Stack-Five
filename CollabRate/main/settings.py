@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     'allauth',
     'allauth.account',
@@ -65,7 +66,8 @@ INSTALLED_APPS = [
     'course.apps.CourseConfig',
 ]
 
-SITE_ID = 1
+# SITE_ID = 1
+SITE_ID = int(os.getenv("SITE_ID", "1"))
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
