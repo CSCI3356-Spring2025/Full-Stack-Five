@@ -38,7 +38,10 @@ SECRET_KEY = 'django-insecure-%h4fu_r#-s0x4+-a%3sy@1fui&n(!uv^bhs(zv764wdf=vrps5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+# Get the comma‑separated list from the env var (or fallback to localhost)
+raw_allowed = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1")
+ALLOWED_HOSTS = [host.strip() for host in raw_allowed.split(",") if host.strip()]
 
 
 # Application definition
