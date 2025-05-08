@@ -10,7 +10,7 @@ services:
     name: mysite
     runtime: python
     rootDir: CollabRate
-    buildCommand: './build.sh'
+    buildCommand: '../build.sh'
     startCommand: 'python -m gunicorn main.asgi:application -k uvicorn.workers.UvicornWorker' 
     envVars:
       - key: DATABASE_URL
