@@ -9,7 +9,7 @@ services:
     plan: free
     name: mysite
     runtime: python
-    rootDirectory: CollabRate
+    rootDir: CollabRate
     buildCommand: './build.sh'
     startCommand: 'python -m gunicorn main.asgi:application -k uvicorn.workers.UvicornWorker' 
     envVars:
