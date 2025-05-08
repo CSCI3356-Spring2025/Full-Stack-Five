@@ -20,6 +20,8 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+DEBUG = os.getenv("DEBUG", "True") == "True"
+
 # Initialize environment variables
 env = environ.Env(
     DEBUG=(bool, False)
@@ -108,10 +110,24 @@ WSGI_APPLICATION = 'main.wsgi.application'
 # }
 
 # Replace the SQLite DATABASES configuration with PostgreSQL:
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         # Replace this value with your local database's connection string.
+#         default='postgresql://postgres:postgres@localhost:5432/mysite',
+#         conn_max_age=600
+#     )
+# }
+# Build your URL fallback:
+if DEBUG:
+    # sqlite:///absolute/path/to/your/db.sqlite3
+    default_db_url = f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+else:
+    # in production on Render, they'll inject DATABASE_URL for you
+    default_db_url = os.environ["DATABASE_URL"]
+
 DATABASES = {
-    'default': dj_database_url.config(
-        # Replace this value with your local database's connection string.
-        default='postgresql://postgres:postgres@localhost:5432/mysite',
+    "default": dj_database_url.config(
+        default=default_db_url,
         conn_max_age=600
     )
 }
