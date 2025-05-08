@@ -23,3 +23,11 @@ services:
         value: 4
       - key: ALLOWED_HOSTS
         value: mysite-8sga.onrender.com
+      - key: GOOGLE_CLIENT_ID
+        value: 744862480191-eh0lqnmc77vq47dr64mpq5gakk4gh2uf.apps.googleusercontent.com
+      - key: GOOGLE_CLIENT_SECRET
+        value: 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
+
+      # ← And your SITE_ID (must match Django’s SITE_ID in settings.py):
+      - key: SITE_ID
+        value: "1"
