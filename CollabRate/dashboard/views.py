@@ -79,32 +79,32 @@ def create_course(request):
         course = Course(code=code, title=title, semester=semester, year=int(year), color=color, professor=request.user)
         course.save()
 
-        raw_emails = request.POST.get('invite_email', '[]')
-        try:
-            emails = json.loads(raw_emails)
-        except ValueError:
-            emails = []
+        # raw_emails = request.POST.get('invite_email', '[]')
+        # try:
+        #     emails = json.loads(raw_emails)
+        # except ValueError:
+        #     emails = []
         
-        signer = TimestampSigner()
-        for email in emails:
-            email = email.get('value', '').strip()
-            if not email.lower().endswith('@bc.edu'):
-                continue
-            token = signer.sign(email)
-            invite_url = request.build_absolute_uri(
-                reverse('course_invite', args=[course.join_code, token])
-            )
-            subject = f"Invitation to join {course.title}"
-            message = (
-                f"Hello,\n\n"
-                f"You have been invited to join the course \"{course.title}\".\n\n"
-                f"Click the following link to join the course:\n{invite_url}\n\n"
-                "If you did not expect this invitation, please ignore this email.\n\n"
-                "Thank you!"
-            )
-            from_email = settings.DEFAULT_FROM_EMAIL
-            recipient_list = [email]
-            send_mail(subject, message, from_email, recipient_list)
+        # signer = TimestampSigner()
+        # for email in emails:
+        #     email = email.get('value', '').strip()
+        #     if not email.lower().endswith('@bc.edu'):
+        #         continue
+        #     token = signer.sign(email)
+        #     invite_url = request.build_absolute_uri(
+        #         reverse('course_invite', args=[course.join_code, token])
+        #     )
+        #     subject = f"Invitation to join {course.title}"
+        #     message = (
+        #         f"Hello,\n\n"
+        #         f"You have been invited to join the course \"{course.title}\".\n\n"
+        #         f"Click the following link to join the course:\n{invite_url}\n\n"
+        #         "If you did not expect this invitation, please ignore this email.\n\n"
+        #         "Thank you!"
+        #     )
+        #     from_email = settings.DEFAULT_FROM_EMAIL
+        #     recipient_list = [email]
+        #     send_mail(subject, message, from_email, recipient_list)
         messages.success(request, f"Course {course.title} created. Join Code: {course.join_code}")
     return redirect('dashboard')
 

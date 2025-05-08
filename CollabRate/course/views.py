@@ -416,31 +416,31 @@ def draft_questions(request, join_code, course_form_id):
             course_form.state = CourseForm.PUBLISHED
             course_form.save()
 
-            students = CustomUser.objects.filter(
-                teams__in=all_teams
-            ).distinct()
-            for student in students:
-                local_dt = timezone.localtime(course_form.due_datetime, timezone.get_current_timezone())
+            # students = CustomUser.objects.filter(
+            #     teams__in=all_teams
+            # ).distinct()
+            # for student in students:
+            #     local_dt = timezone.localtime(course_form.due_datetime, timezone.get_current_timezone())
 
-                # 2) Format as “Apr 30 at 03:20 PM”
-                due_date_str = local_dt.strftime('%b %d')
-                due_time_str = local_dt.strftime('%I:%M %p')
+            #     # 2) Format as “Apr 30 at 03:20 PM”
+            #     due_date_str = local_dt.strftime('%b %d')
+            #     due_time_str = local_dt.strftime('%I:%M %p')
 
-                subject = f"New Form Published: '{course_form.name}' in {course_form.course.code}"
-                message = (
-                    f"Hello,\n\n"
-                    f"A new form \"{course_form.name}\" has been published in your course "
-                    f"\"{course_form.course.title}\".\n\n"
-                    f"Due: {due_date_str} at {due_time_str}\n\n"
-                    f"Please visit the course page to fill out the form.\n\n"
-                    f"Thank you!"
-                )
-                send_mail(
-                    subject,
-                    message,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [student.email],
-                )
+            #     subject = f"New Form Published: '{course_form.name}' in {course_form.course.code}"
+            #     message = (
+            #         f"Hello,\n\n"
+            #         f"A new form \"{course_form.name}\" has been published in your course "
+            #         f"\"{course_form.course.title}\".\n\n"
+            #         f"Due: {due_date_str} at {due_time_str}\n\n"
+            #         f"Please visit the course page to fill out the form.\n\n"
+            #         f"Thank you!"
+            #     )
+            #     send_mail(
+            #         subject,
+            #         message,
+            #         settings.DEFAULT_FROM_EMAIL,
+            #         [student.email],
+            #     )
             messages.success(request, f"Form '{course_form.name}' published and notifications sent.")
             # return redirect('create_form', join_code=join_code)
             return redirect('view_form_responses', join_code=join_code, course_form_id=course_form.pk)
@@ -631,20 +631,20 @@ def edit_form(request, join_code, form_id):
         form.color_5 = request.POST.get('color_5')
 
         form.save() 
-        students = CustomUser.objects.filter(teams__course_forms=form).distinct()
-        if form.state == 'published':
-            for student in students:
-                subject = f"Update: '{form.name}' in {course.code}"
-                message = (
-                    f"Hello,\n\n"
-                    f"The form \"{form.name}\" in your course \"{course.title}\" has been updated.\n\n"
-                    f"Due Date: {form.due_date} at {form.due_time.strftime('%I:%M %p')}\n\n"
-                    f"Check your course page for more details.\n\n"
-                    "Thank you!"
-                )
-                from_email = settings.DEFAULT_FROM_EMAIL
-                recipient_list = [student.email]
-                send_mail(subject, message, from_email, recipient_list)
+        # students = CustomUser.objects.filter(teams__course_forms=form).distinct()
+        # if form.state == 'published':
+        #     for student in students:
+        #         subject = f"Update: '{form.name}' in {course.code}"
+        #         message = (
+        #             f"Hello,\n\n"
+        #             f"The form \"{form.name}\" in your course \"{course.title}\" has been updated.\n\n"
+        #             f"Due Date: {form.due_date} at {form.due_time.strftime('%I:%M %p')}\n\n"
+        #             f"Check your course page for more details.\n\n"
+        #             "Thank you!"
+        #         )
+        #         from_email = settings.DEFAULT_FROM_EMAIL
+        #         recipient_list = [student.email]
+        #         send_mail(subject, message, from_email, recipient_list)
     
         messages.success(request, f"Form '{form.name}' has been updated successfully.")
         return redirect('view_forms', join_code=join_code)
